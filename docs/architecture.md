@@ -95,10 +95,15 @@ sequenceDiagram
 
 | Path | Screen | Guard |
 | --- | --- | --- |
+| `/` (signed out) | Landing page; its buttons go to `/login` | none |
 | `/login` | Sign in or try the demo | none |
+| `/privacy`, `/terms` | Privacy policy and terms of service | none |
 | `/setup` | Create a spreadsheet, pick one, or open from Drive | signed in |
 | `/` | Overview: totals and all parties (`?view=archived` for archived) | signed in + spreadsheet chosen |
 | `/parties/:partyId` | One party's ledger, entry panel, party settings | signed in + spreadsheet chosen |
+
+`RequireAuth` decides what `/` shows: the landing page for signed-out visitors, the overview once signed in,
+so bookmarks to `/` keep working. Every other guarded path sends signed-out visitors to `/login`.
 
 `VITE_ROUTER_MODE=hash` switches to hash URLs (`/#/parties/...`) for hosts without an SPA fallback.
 

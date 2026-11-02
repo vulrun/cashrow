@@ -12,7 +12,7 @@ import { SetupPage } from '@/features/setup/SetupPage'
 /**
  * /login               sign in, or try the demo
  * /setup               create or pick a spreadsheet
- * /                    overview (all parties)
+ * /                    landing page when signed out (RequireAuth), overview (all parties) when signed in
  * /parties/:partyId    one party's ledger
  * /privacy, /terms     public legal pages (no sign-in, so Google's consent screen can link to them)
  */

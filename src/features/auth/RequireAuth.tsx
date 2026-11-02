@@ -2,15 +2,22 @@ import { useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { LandingPage } from '@/features/landing/LandingPage'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { continueSession, signOut } from './authActions'
 import { GoogleMark } from './GoogleMark'
 
-/** Sends signed-out visitors to /login. Shows a re-auth dialog when the token expires. */
+/**
+ * Signed-out visitors see the landing page at / and are sent to /login from anywhere else, so "/" stays the
+ * overview once signed in. Shows a re-auth dialog when the token expires.
+ */
 export function RequireAuth() {
   const status = useAppSelector((s) => s.auth.status)
   const location = useLocation()
-  if (status === 'signedOut') return <Navigate to="/login" replace state={{ from: location }} />
+  if (status === 'signedOut') {
+    if (location.pathname === '/') return <LandingPage />
+    return <Navigate to="/login" replace state={{ from: location }} />
+  }
   return (
     <>
       <Outlet />

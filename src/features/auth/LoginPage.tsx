@@ -37,7 +37,9 @@ export function LoginPage() {
     <div className="flex min-h-dvh items-center justify-center bg-background p-4">
       <main className="flex w-full max-w-[400px] flex-col gap-6 rounded-2xl border border-border bg-card p-7 shadow-[0_1px_2px_rgba(14,23,38,0.04)]">
         <div className="flex flex-col items-center gap-3 text-center">
-          <AppTile className="size-14 shadow-[0_6px_16px_rgba(52,72,214,0.28)]" />
+          <Link to="/" aria-label={`${config.appName} home`} className="rounded-2xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring">
+            <AppTile className="size-14 shadow-[0_6px_16px_rgba(52,72,214,0.28)]" />
+          </Link>
           <div>
             {returning ? (
               <h1 className="text-xl font-bold">Welcome back, {auth.user?.name.split(' ')[0]}</h1>

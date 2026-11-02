@@ -29,7 +29,8 @@ You will end up with one value: `VITE_GOOGLE_CLIENT_ID`, something like
 Open **Google Auth Platform** (or **APIs & Services > OAuth consent screen**).
 
 1. **Branding**: app name (what users see on Google's sign-in screen), a support email, and your
-   developer contact email. Optionally add your site URL, logo, and the app's own legal pages:
+   developer contact email. Optionally add your logo, your site URL as the application home page
+   (`https://<your-site>/` shows the landing page to signed-out visitors), and the app's own legal pages:
    privacy policy `https://<your-site>/privacy` and terms of service `https://<your-site>/terms`
    (with hash routing, e.g. GitHub Pages: `https://<your-site>/#/privacy` and `/#/terms`). Set
    `VITE_CONTACT_EMAIL` so those pages show your contact address (see `docs/deployment.md`).

@@ -46,7 +46,7 @@ src/
     sheetsBackend.ts       Google Sheets implementation
     demoBackend.ts         localStorage implementation + demoSeed.ts sample data
   store/                   Redux store: authSlice, workspaceSlice, session persistence, api.ts (RTK Query)
-  features/                screens and feature components (auth, setup, layout, overview, party, parties, settings, legal)
+  features/                screens and feature components (landing, auth, setup, layout, overview, party, parties, settings, legal)
   components/ui/           primitives: button, dialog, sheet, select, popover, calendar, date pickers...
   components/brand/        Logo, CashrowMark, AppTile, Wordmark (the brand mark drawn as inline SVG)
   routes.tsx               route table
@@ -128,6 +128,8 @@ fallback, build with `VITE_ROUTER_MODE=hash`.
 
 - `/privacy` and `/terms` (`features/legal/`) state what the app does with data. If you change scopes, what is
   stored in the browser, or add any third-party request, update `PrivacyPage.tsx` and its date in the same change.
+- `/` is two screens: `RequireAuth` shows the landing page (`features/landing/`) to signed-out visitors and the
+  overview once signed in. Keep the landing page's claims in step with what the app really does.
 
 - Google Identity Services opens a popup; call `requestAccessToken` only from a click handler.
 - Tokens last about an hour and there is no refresh token (no backend). That is by design.

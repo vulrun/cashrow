@@ -7,7 +7,7 @@ describe('readConfig', () => {
     expect(c.googleClientId).toBe('abc.apps.googleusercontent.com')
     expect(c.routerMode).toBe('hash')
     expect(c.demoEnabled).toBe(true)
-    expect(c.appName).toBe('Cashrow')
+    expect(c.appName).toBe('cashrow')
     expect(c.contactEmail).toBe('')
     expect(isGoogleConfigured(c)).toBe(true)
   })
