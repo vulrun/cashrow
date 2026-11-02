@@ -1,0 +1,19 @@
+/* Cashrow colour tokens for Tailwind CSS v4. Import after "tailwindcss". */
+@theme {
+  --color-cobalt-50: #EEF1FF;
+  --color-cobalt-100: #DCE2FF;
+  --color-cobalt-600: #3448D6;
+  --color-cobalt-700: #2836AE;
+  --color-marigold-100: #FFF1D6;
+  --color-marigold-400: #F6AE2D;
+  --color-marigold-800: #8A4D00;
+  --color-ink-900: #0E1726;
+  --color-slate-600: #4B5565;
+  --color-slate-500: #626B7F;
+  --color-line: #E3E7EF;
+  --color-mist: #F5F7FB;
+  --color-got-50: #E6F6EE;
+  --color-got-600: #0C7D56;
+  --color-gave-50: #FDECEE;
+  --color-gave-600: #C93139;
+}

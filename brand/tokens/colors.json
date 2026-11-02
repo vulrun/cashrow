@@ -1,0 +1,121 @@
+[
+  {
+    "token": "cobalt600",
+    "group": "brand",
+    "name": "Cobalt 600",
+    "hex": "#3448D6",
+    "use": "Primary: buttons, links, logo"
+  },
+  {
+    "token": "cobalt700",
+    "group": "brand",
+    "name": "Cobalt 700",
+    "hex": "#2836AE",
+    "use": "Hover, pressed, text on cobalt tints"
+  },
+  {
+    "token": "cobalt100",
+    "group": "brand",
+    "name": "Cobalt 100",
+    "hex": "#DCE2FF",
+    "use": "Selected borders, focus ring"
+  },
+  {
+    "token": "cobalt50",
+    "group": "brand",
+    "name": "Cobalt 50",
+    "hex": "#EEF1FF",
+    "use": "Selected rows, soft buttons"
+  },
+  {
+    "token": "marigold400",
+    "group": "accent",
+    "name": "Marigold 400",
+    "hex": "#F6AE2D",
+    "use": "Logo \"new row\", highlights, badges on dark"
+  },
+  {
+    "token": "marigold100",
+    "group": "accent",
+    "name": "Marigold 100",
+    "hex": "#FFF1D6",
+    "use": "Highlight backgrounds"
+  },
+  {
+    "token": "marigold800",
+    "group": "accent",
+    "name": "Marigold 800",
+    "hex": "#8A4D00",
+    "use": "Text on marigold tints"
+  },
+  {
+    "token": "ink900",
+    "group": "neutral",
+    "name": "Ink 900",
+    "hex": "#0E1726",
+    "use": "Main text, dark backgrounds"
+  },
+  {
+    "token": "slate600",
+    "group": "neutral",
+    "name": "Slate 600",
+    "hex": "#4B5565",
+    "use": "Secondary text"
+  },
+  {
+    "token": "slate500",
+    "group": "neutral",
+    "name": "Slate 500",
+    "hex": "#626B7F",
+    "use": "Muted text, captions"
+  },
+  {
+    "token": "line",
+    "group": "neutral",
+    "name": "Line",
+    "hex": "#E3E7EF",
+    "use": "Borders, dividers"
+  },
+  {
+    "token": "mist",
+    "group": "neutral",
+    "name": "Mist",
+    "hex": "#F5F7FB",
+    "use": "App background"
+  },
+  {
+    "token": "white",
+    "group": "neutral",
+    "name": "White",
+    "hex": "#FFFFFF",
+    "use": "Cards, panels"
+  },
+  {
+    "token": "got600",
+    "group": "semantic",
+    "name": "Got 600",
+    "hex": "#0C7D56",
+    "use": "Cash in (You got): text, solid buttons"
+  },
+  {
+    "token": "got50",
+    "group": "semantic",
+    "name": "Got 50",
+    "hex": "#E6F6EE",
+    "use": "Cash in tint"
+  },
+  {
+    "token": "gave600",
+    "group": "semantic",
+    "name": "Gave 600",
+    "hex": "#C93139",
+    "use": "Cash out (You gave): text, solid buttons"
+  },
+  {
+    "token": "gave50",
+    "group": "semantic",
+    "name": "Gave 50",
+    "hex": "#FDECEE",
+    "use": "Cash out tint"
+  }
+]

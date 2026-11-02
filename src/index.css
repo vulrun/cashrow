@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+/* Plus Jakarta Sans (the Cashrow typeface). Each weight file carries several subsets; the browser
+   only downloads the ones it needs (latin-ext holds the rupee sign). */
+@import "@fontsource/plus-jakarta-sans/400.css";
+@import "@fontsource/plus-jakarta-sans/500.css";
+@import "@fontsource/plus-jakarta-sans/600.css";
+@import "@fontsource/plus-jakarta-sans/700.css";
+@import "@fontsource/plus-jakarta-sans/800.css";
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-label: var(--label);
+  --color-border: var(--border);
+  --color-hairline: var(--hairline);
+  --color-input: var(--input);
+  --color-input-strong: var(--input-strong);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-softer: var(--brand-softer);
+  --color-brand-border: var(--brand-border);
+
+  --color-highlight: var(--highlight);
+  --color-highlight-soft: var(--highlight-soft);
+  --color-highlight-border: var(--highlight-border);
+  --color-highlight-ink: var(--highlight-ink);
+
+  --color-income: var(--income);
+  --color-income-soft: var(--income-soft);
+  --color-income-border: var(--income-border);
+  --color-expense: var(--expense);
+  --color-expense-soft: var(--expense-soft);
+  --color-expense-border: var(--expense-border);
+  --color-expense-ink: var(--expense-ink);
+  --color-destructive: var(--expense);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+}
+
+:root {
+  /* Cashrow palette. Hex values come from brand/tokens/colors.css; a few in-between
+     tints (muted, borders, ring) are derived here for UI states. */
+  --background: #f5f7fb; /* Mist */
+  --foreground: #0e1726; /* Ink 900 */
+  --card: #ffffff;
+  --muted: #eef1f6;
+  --muted-foreground: #626b7f; /* Slate 500 */
+  --subtle-foreground: #4b5565; /* Slate 600 */
+  --label: #344054;
+  --border: #e3e7ef; /* Line */
+  --hairline: #eef1f6;
+  --input: #e3e7ef;
+  --input-strong: #cdd3de;
+  --ring: #7486e8;
+
+  /* Brand: cobalt */
+  --brand: #3448d6; /* Cobalt 600 */
+  --brand-strong: #2836ae; /* Cobalt 700 */
+  --brand-soft: #eef1ff; /* Cobalt 50 */
+  --brand-softer: #dce2ff; /* Cobalt 100 */
+  --brand-border: #c7cffa;
+
+  /* Accent: marigold, for what is new or needs a look */
+  --highlight: #f6ae2d; /* Marigold 400 */
+  --highlight-soft: #fff1d6; /* Marigold 100 */
+  --highlight-border: #f7d28e;
+  --highlight-ink: #8a4d00; /* Marigold 800 */
+
+  /* Money */
+  --income: #0c7d56; /* Got 600 */
+  --income-soft: #e6f6ee; /* Got 50 */
+  --income-border: #b5e2cb;
+  --expense: #c93139; /* Gave 600 */
+  --expense-soft: #fdecee; /* Gave 50 */
+  --expense-border: #f5c2c6;
+  --expense-ink: #8e1f26;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-background font-sans text-foreground;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+@utility eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

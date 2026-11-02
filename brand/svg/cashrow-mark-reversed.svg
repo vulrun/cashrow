@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Cashrow mark">
+  <title>Cashrow mark</title>
+  <g transform="translate(-56.00 -56.00)"><g transform="translate(0.00 0.00) scale(1.00000)">
+    <defs>
+      <clipPath id="m-reversed-rows"><rect x="0" y="0" width="512" height="193.00"/><rect x="0" y="319.00" width="512" height="193.00"/></clipPath>
+      <clipPath id="m-reversed-mid"><rect x="0" y="219.00" width="512" height="74.00"/></clipPath>
+    </defs>
+    <path d="M399.87 394.93A200.0 200.0 0 1 1 399.87 117.07L327.93 186.53A100.0 100.0 0 1 0 327.93 325.47Z" fill="#FFFFFF" clip-path="url(#m-reversed-rows)"/>
+    <path d="M399.87 394.93A200.0 200.0 0 1 1 399.87 117.07L327.93 186.53A100.0 100.0 0 1 0 327.93 325.47Z" fill="#F6AE2D" clip-path="url(#m-reversed-mid)"/>
+  </g></g>
+</svg>

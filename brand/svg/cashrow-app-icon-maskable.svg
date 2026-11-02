@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Cashrow">
+  <title>Cashrow</title>
+  <rect width="1024" height="1024" rx="0.0" fill="#3448D6"/>
+  <g transform="translate(245.35 225.28) scale(1.12000)">
+    <defs>
+      <clipPath id="icon10241-rows"><rect x="0" y="0" width="512" height="193.00"/><rect x="0" y="319.00" width="512" height="193.00"/></clipPath>
+      <clipPath id="icon10241-mid"><rect x="0" y="219.00" width="512" height="74.00"/></clipPath>
+    </defs>
+    <path d="M399.87 394.93A200.0 200.0 0 1 1 399.87 117.07L327.93 186.53A100.0 100.0 0 1 0 327.93 325.47Z" fill="#FFFFFF" clip-path="url(#icon10241-rows)"/>
+    <path d="M399.87 394.93A200.0 200.0 0 1 1 399.87 117.07L327.93 186.53A100.0 100.0 0 1 0 327.93 325.47Z" fill="#F6AE2D" clip-path="url(#icon10241-mid)"/>
+  </g>
+</svg>

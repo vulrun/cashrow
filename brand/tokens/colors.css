@@ -1,0 +1,19 @@
+:root {
+  --cr-cobalt-600: #3448D6; /* Primary: buttons, links, logo */
+  --cr-cobalt-700: #2836AE; /* Hover, pressed, text on cobalt tints */
+  --cr-cobalt-100: #DCE2FF; /* Selected borders, focus ring */
+  --cr-cobalt-50: #EEF1FF; /* Selected rows, soft buttons */
+  --cr-marigold-400: #F6AE2D; /* Logo "new row", highlights, badges on dark */
+  --cr-marigold-100: #FFF1D6; /* Highlight backgrounds */
+  --cr-marigold-800: #8A4D00; /* Text on marigold tints */
+  --cr-ink-900: #0E1726; /* Main text, dark backgrounds */
+  --cr-slate-600: #4B5565; /* Secondary text */
+  --cr-slate-500: #626B7F; /* Muted text, captions */
+  --cr-line: #E3E7EF; /* Borders, dividers */
+  --cr-mist: #F5F7FB; /* App background */
+  --cr-white: #FFFFFF; /* Cards, panels */
+  --cr-got-600: #0C7D56; /* Cash in (You got): text, solid buttons */
+  --cr-got-50: #E6F6EE; /* Cash in tint */
+  --cr-gave-600: #C93139; /* Cash out (You gave): text, solid buttons */
+  --cr-gave-50: #FDECEE; /* Cash out tint */
+}
