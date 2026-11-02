@@ -10,4 +10,5 @@ window.__CASHROW_CONFIG__ = window.__CASHROW_CONFIG__ || {
   // GOOGLE_CLIENT_ID: "1234567890-abc.apps.googleusercontent.com",
   // ENABLE_DEMO: "true",
   // APP_NAME: "Cashrow",
+  // CONTACT_EMAIL: "privacy@example.com",
 }

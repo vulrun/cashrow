@@ -8,15 +8,16 @@ describe('readConfig', () => {
     expect(c.routerMode).toBe('hash')
     expect(c.demoEnabled).toBe(true)
     expect(c.appName).toBe('Cashrow')
+    expect(c.contactEmail).toBe('')
     expect(isGoogleConfigured(c)).toBe(true)
   })
 
   it('lets runtime config.js override build values', () => {
     const c = readConfig(
-      { GOOGLE_CLIENT_ID: 'runtime-id', ENABLE_DEMO: 'false', APP_NAME: 'Acme Cash' },
-      { VITE_GOOGLE_CLIENT_ID: 'build-id', VITE_ENABLE_DEMO: 'true' },
+      { GOOGLE_CLIENT_ID: 'runtime-id', ENABLE_DEMO: 'false', APP_NAME: 'Acme Cash', CONTACT_EMAIL: 'help@acme.test' },
+      { VITE_GOOGLE_CLIENT_ID: 'build-id', VITE_ENABLE_DEMO: 'true', VITE_CONTACT_EMAIL: 'build@acme.test' },
     )
-    expect(c).toMatchObject({ googleClientId: 'runtime-id', demoEnabled: false, appName: 'Acme Cash' })
+    expect(c).toMatchObject({ googleClientId: 'runtime-id', demoEnabled: false, appName: 'Acme Cash', contactEmail: 'help@acme.test' })
   })
 
   it('ignores empty runtime values', () => {

@@ -12,6 +12,7 @@ type RuntimeConfig = Partial<{
   GOOGLE_CLIENT_ID: string
   ENABLE_DEMO: string
   APP_NAME: string
+  CONTACT_EMAIL: string
 }>
 
 declare global {
@@ -28,9 +29,11 @@ export interface AppConfig {
   /** "browser" for clean URLs (needs SPA fallback) or "hash" for any static host. */
   routerMode: 'browser' | 'hash'
   appName: string
+  /** Who runs this deployment, shown on /privacy and /terms. Empty means "open an issue" on the repo. */
+  contactEmail: string
 }
 
-export const DEFAULT_APP_NAME = 'Cashrow'
+export const DEFAULT_APP_NAME = 'cashrow'
 
 function pick(runtime: string | undefined, build: string | undefined): string {
   const value = runtime !== undefined && runtime !== '' ? runtime : build
@@ -52,6 +55,7 @@ export function readConfig(
     demoEnabled: toBool(pick(runtime.ENABLE_DEMO, build.VITE_ENABLE_DEMO), true),
     routerMode,
     appName: pick(runtime.APP_NAME, build.VITE_APP_NAME) || DEFAULT_APP_NAME,
+    contactEmail: pick(runtime.CONTACT_EMAIL, build.VITE_CONTACT_EMAIL),
   }
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router'
+import { Link, Navigate } from 'react-router'
 import { InfoIcon, LockIcon } from 'lucide-react'
 import { AppTile, Wordmark } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'
@@ -103,6 +103,15 @@ export function LoginPage() {
           The app runs in your browser and talks to Google directly. There is no server and no tracking. It can only see
           the spreadsheets it creates.
         </p>
+
+        <nav aria-label="Legal" className="-mt-2 flex justify-center gap-4 border-t border-hairline pt-4 text-[12.5px]">
+          <Link to="/privacy" className="font-medium text-subtle-foreground underline-offset-2 outline-none hover:text-brand-strong hover:underline focus-visible:underline">
+            Privacy policy
+          </Link>
+          <Link to="/terms" className="font-medium text-subtle-foreground underline-offset-2 outline-none hover:text-brand-strong hover:underline focus-visible:underline">
+            Terms of service
+          </Link>
+        </nav>
       </main>
     </div>
   )

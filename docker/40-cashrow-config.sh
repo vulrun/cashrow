@@ -14,7 +14,8 @@ cat > "$target" <<EOF
 window.__CASHROW_CONFIG__ = {
   GOOGLE_CLIENT_ID: "$(escape "${GOOGLE_CLIENT_ID:-}")",
   ENABLE_DEMO: "$(escape "${ENABLE_DEMO:-true}")",
-  APP_NAME: "$(escape "${APP_NAME:-Cashrow}")"
+  APP_NAME: "$(escape "${APP_NAME:-Cashrow}")",
+  CONTACT_EMAIL: "$(escape "${CONTACT_EMAIL:-}")"
 };
 EOF
 

@@ -17,6 +17,7 @@ After deploying, add the site's origin (for example `https://cashrow.example.com
 | `VITE_ROUTER_MODE` | no | `browser` | `browser` (clean URLs, needs SPA fallback) or `hash` |
 | `VITE_BASE_PATH` | no | `/` | Sub-path the app is served from, e.g. `/cashrow/` |
 | `VITE_APP_NAME` | no | `Cashrow` | Name in the header and browser tab. `Cashrow` shows the two-tone wordmark; any other name is shown as text next to the mark |
+| `VITE_CONTACT_EMAIL` | no | empty | Contact shown on `/privacy` and `/terms`. Empty points people to the repository's GitHub issues |
 
 `VITE_*` values are read at **build time** and end up in the JavaScript bundle. They are not secrets.
 For hosts where you'd rather configure at **run time**, edit `config.js` in the built site (or use the
@@ -79,6 +80,7 @@ docker run -d -p 8080:80 \
 | `GOOGLE_CLIENT_ID` | `VITE_GOOGLE_CLIENT_ID` |
 | `ENABLE_DEMO` | `VITE_ENABLE_DEMO` |
 | `APP_NAME` | `VITE_APP_NAME` |
+| `CONTACT_EMAIL` | `VITE_CONTACT_EMAIL` |
 
 Serve it over HTTPS (behind your reverse proxy) and add that origin to the OAuth client. Google allows
 plain `http://` only for `localhost`.
