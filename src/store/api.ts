@@ -211,16 +211,17 @@ export const api = createApi({
             const ws = await workspaceFor(spreadsheetId, getState, dispatch)
             return backendFrom(getState).saveSettings(ws, settings)
           }),
-        async onQueryStarted({ spreadsheetId }, { dispatch, queryFulfilled }) {
+        // Optimistic, so list order and page size change on click; rolled back if the write fails.
+        async onQueryStarted({ spreadsheetId, settings }, { dispatch, queryFulfilled }) {
+          const patch = dispatch(
+            api.util.updateQueryData('getWorkspace', spreadsheetId, (ws) => {
+              ws.settings = settings
+            }),
+          )
           try {
-            const { data: settings } = await queryFulfilled
-            dispatch(
-              api.util.updateQueryData('getWorkspace', spreadsheetId, (ws) => {
-                ws.settings = settings
-              }),
-            )
+            await queryFulfilled
           } catch {
-            // handled by caller
+            patch.undo() // error handled by caller
           }
         },
       }),

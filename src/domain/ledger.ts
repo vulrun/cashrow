@@ -1,5 +1,5 @@
 import { addDays, isoOf, monthOf, shiftMonth, type IsoDate } from '@/lib/dates'
-import type { BalanceWording, Entry, EntryType, Party, PartyTotals } from './types'
+import type { BalanceWording, Entry, EntryType, Party, PartySortKey, PartyTotals, SortDir } from './types'
 
 export function computeTotals(entries: Entry[]): PartyTotals {
   let totalIn = 0
@@ -122,6 +122,38 @@ export function byRecentActivity(
   const db = b.totals.lastDate ?? ''
   if (da !== db) return da < db ? 1 : -1
   return a.party.name.localeCompare(b.party.name)
+}
+
+export const PARTY_SORT_OPTIONS: { by: PartySortKey; dir: SortDir; label: string }[] = [
+  { by: 'lastEntry', dir: 'desc', label: 'Latest entry first' },
+  { by: 'lastEntry', dir: 'asc', label: 'Oldest entry first' },
+  { by: 'name', dir: 'asc', label: 'Name A–Z' },
+  { by: 'name', dir: 'desc', label: 'Name Z–A' },
+  { by: 'settle', dir: 'desc', label: 'Most to settle' },
+  { by: 'settle', dir: 'asc', label: 'Least to settle' },
+]
+
+const byName = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true })
+
+/**
+ * Party list order for the sidebar. Ties go by name A–Z. Parties with no entries
+ * go last when sorting by last entry, whichever the direction.
+ */
+export function sortParties<T extends { party: Party; totals: PartyTotals }>(list: T[], by: PartySortKey, dir: SortDir): T[] {
+  const sign = dir === 'asc' ? 1 : -1
+  return [...list].sort((a, b) => {
+    if (by === 'name') return sign * byName(a.party.name, b.party.name)
+    const diff =
+      by === 'settle'
+        ? sign * (Math.abs(a.totals.balance) - Math.abs(b.totals.balance))
+        : byLastDate(a.totals.lastDate, b.totals.lastDate, sign)
+    return diff || byName(a.party.name, b.party.name)
+  })
+}
+
+function byLastDate(a: IsoDate | null, b: IsoDate | null, sign: number): number {
+  if (!a || !b) return a ? -1 : b ? 1 : 0
+  return a === b ? 0 : sign * (a < b ? -1 : 1)
 }
 
 export type BalanceDirection = 'in' | 'out' | 'settled'

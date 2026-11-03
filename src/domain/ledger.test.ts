@@ -7,11 +7,12 @@ import {
   filterEntries,
   runningBalances,
   sortEntries,
+  sortParties,
   sumBalances,
   sumTotals,
   EMPTY_FILTERS,
 } from './ledger'
-import type { Entry } from './types'
+import type { Entry, Party } from './types'
 
 const e = (id: string, date: string, type: 'IN' | 'OUT', amount: number, row: number, extra: Partial<Entry> = {}): Entry => ({
   id,
@@ -111,5 +112,43 @@ describe('ledger', () => {
     const t = (balance: number) => ({ ...computeTotals([]), balance })
     expect(sumBalances([t(100.1), t(-40), t(0), t(0.2), t(-9.99)])).toEqual({ in: 100.3, inCount: 2, out: 49.99, outCount: 2 })
     expect(sumBalances([])).toEqual({ in: 0, inCount: 0, out: 0, outCount: 0 })
+  })
+
+  describe('sortParties', () => {
+    const p = (name: string, lastDate: string | null, balance: number) => ({
+      party: { name } as Party,
+      totals: { ...computeTotals([]), lastDate, balance },
+    })
+    const list = [
+      p('beta', '2026-10-02', -300),
+      p('Alpha', '2026-10-05', 120),
+      p('Gamma', null, 0),
+      p('delta', '2026-10-02', 300),
+      p('Item 10', '2026-09-01', -5),
+      p('Item 9', '2026-09-01', 5),
+    ]
+    const names = (by: Parameters<typeof sortParties>[1], dir: Parameters<typeof sortParties>[2]) =>
+      sortParties(list, by, dir).map((s) => s.party.name)
+
+    it('orders by last entry, ties by name, parties with no entries last', () => {
+      expect(names('lastEntry', 'desc')).toEqual(['Alpha', 'beta', 'delta', 'Item 9', 'Item 10', 'Gamma'])
+      expect(names('lastEntry', 'asc')).toEqual(['Item 9', 'Item 10', 'beta', 'delta', 'Alpha', 'Gamma'])
+    })
+
+    it('orders by name, ignoring case and reading numbers as numbers', () => {
+      expect(names('name', 'asc')).toEqual(['Alpha', 'beta', 'delta', 'Gamma', 'Item 9', 'Item 10'])
+      expect(names('name', 'desc')).toEqual(['Item 10', 'Item 9', 'Gamma', 'delta', 'beta', 'Alpha'])
+    })
+
+    it('orders by the amount left to settle in either direction, ties by name', () => {
+      expect(names('settle', 'desc')).toEqual(['beta', 'delta', 'Alpha', 'Item 9', 'Item 10', 'Gamma'])
+      expect(names('settle', 'asc')).toEqual(['Gamma', 'Item 9', 'Item 10', 'Alpha', 'beta', 'delta'])
+    })
+
+    it('does not change the input list', () => {
+      const before = list.map((s) => s.party.name)
+      sortParties(list, 'name', 'desc')
+      expect(list.map((s) => s.party.name)).toEqual(before)
+    })
   })
 })

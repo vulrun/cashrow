@@ -42,7 +42,11 @@ Global settings JSON (`__Settings!A1`):
   "paymentMethods": ["UPI", "Bank transfer", "Cash", "Cheque", "Card"],
   "allowFutureDates": false,
   "balanceWording": "net",
-  "sidebarTotals": "balances"
+  "sidebarTotals": "balances",
+  "partySort": "lastEntry",
+  "partySortDir": "desc",
+  "ledgerSortDir": "desc",
+  "ledgerPageSize": 25
 }
 ```
 
@@ -52,8 +56,12 @@ Global settings JSON (`__Settings!A1`):
 | `dateFormat` | `text` (23 Oct 2026), `dmy` (23/10/2026), `mdy` (10/23/2026), `iso` (2026-10-23) | `text` |
 | `paymentMethods` | non-empty list of names, 30 characters max each | five defaults above |
 | `allowFutureDates` | boolean | `false` |
-| `balanceWording` | `net` (Net in / Net out) or `settle` (You'll give / You'll get); display only | `net` |
-| `sidebarTotals` | `balances` (balances to settle, by direction) or `cash` (You got / You gave); display only | `balances` |
+| `balanceWording` | `net` (Net in / Net out), `cash` (Cash in / Cash out) or `settle` (You'll give / You'll get); display only | `net` |
+| `sidebarTotals` | `balances` (Total balance left: balances to settle, by direction) or `cash` (Total spends done: You got / You gave); display only | `balances` |
+| `partySort` | sidebar party order: `lastEntry` (last entry date), `name` or `settle` (amount left to settle); display only | `lastEntry` |
+| `partySortDir` | `asc` or `desc`, for `partySort` | `desc` |
+| `ledgerSortDir` | date order of a party's entries: `asc` (oldest first) or `desc` (newest first); display only | `desc` |
+| `ledgerPageSize` | entries per page on a party's ledger: `25`, `50` or `100` | `25` |
 
 Settings are parsed leniently: a missing key, bad value or broken JSON falls back to the default
 instead of breaking the app. People never edit this JSON in the app; the Settings dialog has form fields.

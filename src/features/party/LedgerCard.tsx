@@ -1,6 +1,10 @@
-import { useMemo, useState } from 'react'
-import { ChevronLeftIcon, ChevronRightIcon, PencilIcon, SearchIcon } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { DownloadIcon, FileTextIcon, ImageIcon, LoaderCircleIcon, PencilIcon, SearchIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { DateRangePicker, type DateRangeValue } from '@/components/ui/date-range-picker'
+import { Pagination } from '@/components/ui/pagination'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Segmented } from '@/components/ui/segmented'
 import { Select } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -13,11 +17,16 @@ import {
   type EntryFilters,
   type EntryLabels,
 } from '@/domain/ledger'
-import type { Entry, GlobalSettings } from '@/domain/types'
+import { LEDGER_PAGE_SIZES } from '@/domain/schemas'
+import type { Entry, GlobalSettings, LedgerPageSize } from '@/domain/types'
 import type { IsoDate } from '@/lib/dates'
-import { cn } from '@/lib/utils'
+import { cn, pluralize } from '@/lib/utils'
+import type { ExportFormat } from './export/exportLedger'
 
-export const PAGE_SIZE = 20
+const EXPORTS: { format: ExportFormat; label: string; icon: typeof FileTextIcon }[] = [
+  { format: 'pdf', label: 'PDF document', icon: FileTextIcon },
+  { format: 'jpg', label: 'JPG image', icon: ImageIcon },
+]
 // Below xl: Date | Note | Amount (signed) | Edit. From xl: Date | Note | Method | Cash out | Cash in | Balance | Edit.
 // Phones fold the date under the note.
 const GRID =
@@ -27,9 +36,12 @@ const WIDE = 'hidden xl:block'
 const NARROW = 'xl:hidden'
 
 interface Props {
+  partyName: string
   entries: Entry[]
   balances: Map<string, number>
   settings: GlobalSettings
+  /** Saves date order and page size to the global settings. */
+  onSettingsChange: (patch: Partial<GlobalSettings>) => void
   labels: EntryLabels
   today: IsoDate
   loading: boolean
@@ -38,14 +50,31 @@ interface Props {
   fmt: {
     money: (n: number) => string
     date: (iso: string | null | undefined) => string
+    caption: (balance: number) => string
   }
 }
 
-export function LedgerCard({ entries, balances, settings, labels, today, loading, selectedId, onEdit, fmt }: Props) {
+export function LedgerCard({
+  partyName,
+  entries,
+  balances,
+  settings,
+  onSettingsChange,
+  labels,
+  today,
+  loading,
+  selectedId,
+  onEdit,
+  fmt,
+}: Props) {
   const [filters, setFilters] = useState<EntryFilters>(EMPTY_FILTERS)
   const [range, setRange] = useState<DateRangeValue>({ from: '', to: '', preset: null })
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [page, setPage] = useState(0)
+  const [exportOpen, setExportOpen] = useState(false)
+  const [exporting, setExporting] = useState<ExportFormat | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const sortDir = settings.ledgerSortDir
+  const pageSize = settings.ledgerPageSize
 
   const update = (patch: Partial<EntryFilters>) => {
     setFilters((f) => ({ ...f, ...patch }))
@@ -61,16 +90,36 @@ export function LedgerCard({ entries, balances, settings, labels, today, loading
   const filtered = useMemo(() => filterEntries(entries, filters), [entries, filters])
   const sorted = useMemo(() => sortEntries(filtered, sortDir), [filtered, sortDir])
   const filteredTotals = useMemo(() => computeTotals(filtered), [filtered])
-  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
+  const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize))
   const current = Math.min(page, pageCount - 1)
-  const rows = sorted.slice(current * PAGE_SIZE, current * PAGE_SIZE + PAGE_SIZE)
+  const rows = sorted.slice(current * pageSize, current * pageSize + pageSize)
   const active = hasActiveFilters(filters)
+
+  function goToPage(next: number) {
+    setPage(next)
+    // Paging from the footer of a long page: bring the first row back into view.
+    const section = sectionRef.current
+    if (section && section.getBoundingClientRect().top < 0) section.scrollIntoView({ block: 'start' })
+  }
+
+  async function runExport(format: ExportFormat) {
+    setExporting(format)
+    try {
+      const { exportLedger } = await import('./export/exportLedger')
+      await exportLedger({ partyName, entries: sorted, balances, labels, filters, generatedOn: today, fmt }, format)
+      setExportOpen(false)
+    } catch (err) {
+      toast.error(err instanceof Error && err.name === 'ExportError' ? err.message : 'Could not create the export. Try again.')
+    } finally {
+      setExporting(null)
+    }
+  }
 
   const sortButton = (
     <button
       type="button"
       onClick={() => {
-        setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))
+        onSettingsChange({ ledgerSortDir: sortDir === 'desc' ? 'asc' : 'desc' })
         setPage(0)
       }}
       className="eyebrow min-h-8 text-foreground outline-none focus-visible:underline"
@@ -88,8 +137,9 @@ export function LedgerCard({ entries, balances, settings, labels, today, loading
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="entries-heading"
-      className="rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(14,23,38,0.04)]"
+      className="scroll-mt-4 rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(14,23,38,0.04)]"
     >
       <h2 id="entries-heading" className="sr-only">
         Entries
@@ -145,6 +195,37 @@ export function LedgerCard({ entries, balances, settings, labels, today, loading
             Clear
           </button>
         )}
+        <Popover open={exportOpen} onOpenChange={(open) => !exporting && setExportOpen(open)}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="h-[34px] rounded-lg" disabled={loading || sorted.length === 0}>
+              <DownloadIcon className="size-[15px]" aria-hidden="true" />
+              Export
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-[264px] p-1.5">
+            <p className="px-2.5 pb-2 pt-1.5 text-[12.5px] text-muted-foreground">
+              {active
+                ? `Exports the ${pluralize(sorted.length, 'entry', 'entries')} that match your filters`
+                : `Exports all ${pluralize(sorted.length, 'entry', 'entries')}`}
+              , {sortDir === 'desc' ? 'newest' : 'oldest'} first.
+            </p>
+            {EXPORTS.map(({ format, label, icon: Icon }) => (
+              <button
+                key={format}
+                type="button"
+                disabled={!!exporting}
+                onClick={() => void runExport(format)}
+                className="flex h-10 w-full items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] font-medium outline-none hover:bg-brand-soft hover:text-brand-strong focus-visible:bg-brand-soft focus-visible:text-brand-strong disabled:opacity-60"
+              >
+                <Icon className="size-4" aria-hidden="true" />
+                {label}
+                {exporting === format && (
+                  <LoaderCircleIcon className="ml-auto size-4 animate-spin" aria-label="Preparing" />
+                )}
+              </button>
+            ))}
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="overflow-x-auto">
@@ -258,7 +339,7 @@ export function LedgerCard({ entries, balances, settings, labels, today, loading
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2.5 pl-[22px] pr-4 text-[12.5px] text-subtle-foreground">
         <span aria-live="polite">
           {sorted.length
-            ? `${current * PAGE_SIZE + 1}–${current * PAGE_SIZE + rows.length} of ${sorted.length} ${active ? 'matching entries' : 'entries'}`
+            ? `${current * pageSize + 1}–${current * pageSize + rows.length} of ${sorted.length} ${active ? 'matching entries' : 'entries'}`
             : '0 entries'}
           {active && sorted.length > 0 && (
             <>
@@ -269,31 +350,25 @@ export function LedgerCard({ entries, balances, settings, labels, today, loading
             </>
           )}
         </span>
-        {pageCount > 1 && (
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              aria-label="Previous page"
-              disabled={current === 0}
-              onClick={() => setPage(current - 1)}
-              className="flex size-8 items-center justify-center rounded-lg bg-muted outline-none hover:bg-border focus-visible:ring-[3px] focus-visible:ring-ring disabled:opacity-45"
-            >
-              <ChevronLeftIcon className="size-[15px]" />
-            </button>
-            <span className="min-w-[84px] text-center">
-              Page {current + 1} of {pageCount}
-            </span>
-            <button
-              type="button"
-              aria-label="Next page"
-              disabled={current >= pageCount - 1}
-              onClick={() => setPage(current + 1)}
-              className="flex size-8 items-center justify-center rounded-lg bg-muted outline-none hover:bg-border focus-visible:ring-[3px] focus-visible:ring-ring disabled:opacity-45"
-            >
-              <ChevronRightIcon className="size-[15px]" />
-            </button>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          {entries.length > LEDGER_PAGE_SIZES[0] && (
+            <div className="flex items-center gap-2">
+              <span aria-hidden="true">Rows per page</span>
+              <Select
+                size="sm"
+                aria-label="Rows per page"
+                className="w-[72px]"
+                value={String(pageSize)}
+                onValueChange={(v) => {
+                  onSettingsChange({ ledgerPageSize: Number(v) as LedgerPageSize })
+                  setPage(0)
+                }}
+                options={LEDGER_PAGE_SIZES.map((n) => ({ value: String(n), label: String(n) }))}
+              />
+            </div>
+          )}
+          {pageCount > 1 && <Pagination page={current} pageCount={pageCount} onPageChange={goToPage} />}
+        </div>
       </div>
     </section>
   )

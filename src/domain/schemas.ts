@@ -1,6 +1,15 @@
 import { isIsoDate, type DateFormat, type IsoDate } from '@/lib/dates'
 import { parseAmount } from '@/lib/money'
-import type { EntryInput, EntryType, GlobalSettings, PartyInput } from './types'
+import type {
+  BalanceWording,
+  EntryInput,
+  EntryType,
+  GlobalSettings,
+  LedgerPageSize,
+  PartyInput,
+  PartySortKey,
+  SortDir,
+} from './types'
 
 export const SETTINGS_TAB = '__Settings'
 export const DEFAULT_PAYMENT_METHODS = ['UPI', 'Bank transfer', 'Cash', 'Cheque', 'Card']
@@ -13,6 +22,10 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
   allowFutureDates: false,
   balanceWording: 'net',
   sidebarTotals: 'balances',
+  partySort: 'lastEntry',
+  partySortDir: 'desc',
+  ledgerSortDir: 'desc',
+  ledgerPageSize: 25,
 }
 
 export const LIMITS = {
@@ -30,6 +43,16 @@ export const LIMITS = {
 // ---------------------------------------------------------------------------
 
 const DATE_FORMATS: DateFormat[] = ['text', 'dmy', 'mdy', 'iso']
+const BALANCE_WORDINGS: BalanceWording[] = ['net', 'cash', 'settle']
+const PARTY_SORT_KEYS: PartySortKey[] = ['lastEntry', 'name', 'settle']
+export const LEDGER_PAGE_SIZES: LedgerPageSize[] = [25, 50, 100]
+
+/** The value if it is one of `allowed`, otherwise the fallback. */
+function oneOf<T>(value: unknown, allowed: readonly T[], fallback: T): T {
+  return allowed.includes(value as T) ? (value as T) : fallback
+}
+
+const sortDir = (value: unknown, fallback: SortDir): SortDir => oneOf(value, ['asc', 'desc'], fallback)
 
 function asObject(raw: unknown): Record<string, unknown> {
   let value: unknown = raw
@@ -63,8 +86,12 @@ export function parseGlobalSettings(raw: unknown): GlobalSettings {
     dateFormat: DATE_FORMATS.includes(dateFormat) ? dateFormat : DEFAULT_SETTINGS.dateFormat,
     paymentMethods: methods.length > 0 ? methods : [...DEFAULT_PAYMENT_METHODS],
     allowFutureDates: o.allowFutureDates === true,
-    balanceWording: o.balanceWording === 'settle' ? 'settle' : 'net',
+    balanceWording: oneOf(o.balanceWording, BALANCE_WORDINGS, DEFAULT_SETTINGS.balanceWording),
     sidebarTotals: o.sidebarTotals === 'cash' ? 'cash' : 'balances',
+    partySort: oneOf(o.partySort, PARTY_SORT_KEYS, DEFAULT_SETTINGS.partySort),
+    partySortDir: sortDir(o.partySortDir, DEFAULT_SETTINGS.partySortDir),
+    ledgerSortDir: sortDir(o.ledgerSortDir, DEFAULT_SETTINGS.ledgerSortDir),
+    ledgerPageSize: oneOf(o.ledgerPageSize, LEDGER_PAGE_SIZES, DEFAULT_SETTINGS.ledgerPageSize),
   }
 }
 

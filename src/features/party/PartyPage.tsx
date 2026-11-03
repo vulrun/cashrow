@@ -11,6 +11,7 @@ import { useCashbook, useFormatters } from '@/features/cashbook/useCashbook'
 import { PageHeader } from '@/features/layout/PageHeader'
 import { useLayout } from '@/features/layout/LayoutContext'
 import { InsightsCard } from '@/features/overview/InsightsCard'
+import { useUpdateSettings } from '@/features/settings/useUpdateSettings'
 import { useToday } from '@/hooks/useToday'
 import { pluralize } from '@/lib/utils'
 import { useSetPartyArchivedMutation, type AppError } from '@/store/api'
@@ -39,6 +40,7 @@ function PartyView({ partyId }: { partyId: string }) {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [nonce, setNonce] = useState(0)
   const [setArchived, archiveState] = useSetPartyArchivedMutation()
+  const updateSettings = useUpdateSettings(ws)
 
   const party = ws?.parties.find((p) => p.id === partyId)
   const entries = useMemo(() => (party ? (ledgers?.byParty[party.id] ?? []) : []), [ledgers, party])
@@ -161,9 +163,11 @@ function PartyView({ partyId }: { partyId: string }) {
           />
 
           <LedgerCard
+            partyName={party.name}
             entries={entries}
             balances={balances}
             settings={settings}
+            onSettingsChange={(patch) => void updateSettings(patch)}
             labels={labels}
             today={today}
             loading={loadingLedger}

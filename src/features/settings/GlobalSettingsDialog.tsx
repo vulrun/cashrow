@@ -9,8 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { DEMO_SPREADSHEET_ID } from '@/backend'
+import { PARTY_SORT_OPTIONS } from '@/domain/ledger'
 import { validateMethodName } from '@/domain/schemas'
-import type { BalanceWording, GlobalSettings, SidebarTotals, Workspace } from '@/domain/types'
+import type { BalanceWording, GlobalSettings, PartySortKey, SidebarTotals, SortDir, Workspace } from '@/domain/types'
 import type { DateFormat } from '@/lib/dates'
 import { CURRENCIES } from '@/lib/money'
 import { useAppDispatch } from '@/store'
@@ -31,9 +32,11 @@ const BALANCE_WORDINGS: { value: BalanceWording; label: string }[] = [
 ]
 
 const SIDEBAR_TOTALS: { value: SidebarTotals; label: string }[] = [
-  { value: 'balances', label: 'Balances to settle' },
-  { value: 'cash', label: 'You got · You gave' },
+  { value: 'balances', label: 'Total balance left' },
+  { value: 'cash', label: 'Total spends done' },
 ]
+
+const PARTY_ORDERS = PARTY_SORT_OPTIONS.map((o) => ({ value: `${o.by}:${o.dir}`, label: o.label }))
 
 interface Props {
   open: boolean
@@ -157,6 +160,17 @@ function SettingsForm({ workspace, onDone }: { workspace: Workspace; onDone: () 
             value={draft.sidebarTotals}
             onValueChange={(sidebarTotals) => setDraft((d) => ({ ...d, sidebarTotals: sidebarTotals as SidebarTotals }))}
             options={SIDEBAR_TOTALS}
+          />
+        </Field>
+        <Field label="Party order" htmlFor="settings-party-order" hint="How the sidebar lists parties.">
+          <Select
+            id="settings-party-order"
+            value={`${draft.partySort}:${draft.partySortDir}`}
+            onValueChange={(order) => {
+              const [partySort, partySortDir] = order.split(':') as [PartySortKey, SortDir]
+              setDraft((d) => ({ ...d, partySort, partySortDir }))
+            }}
+            options={PARTY_ORDERS}
           />
         </Field>
       </div>

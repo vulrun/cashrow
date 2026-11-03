@@ -7,7 +7,7 @@ import { ContactLink, ExternalLink, LegalList, LegalPage, LegalSection } from '.
 export function PrivacyPage() {
   const app = config.appName
   return (
-    <LegalPage title="Privacy policy" updated="2 November 2026">
+    <LegalPage title="Privacy policy" updated="3 November 2026">
       <p>
         {app} is a cash book that runs entirely in your browser and keeps your records in a Google Sheet in your own
         Google Drive. This policy explains what that means for your data on this site ({window.location.host}). In
@@ -26,6 +26,7 @@ export function PrivacyPage() {
         <LegalList>
           <li>
             <strong>Your basic profile</strong> (name, email address and profile picture), to show who is signed in.
+            Your picture is loaded straight from Google's servers.
           </li>
           <li>
             <strong>Only the Google Drive files you use with this app</strong> (the <code>drive.file</code> permission).
@@ -41,6 +42,10 @@ export function PrivacyPage() {
           Your parties, entries and settings are stored in a Google Sheet in your Google Drive. Your browser sends them
           directly to Google's Sheets and Drive APIs. They are never sent to us, and we have no copy. Google stores them
           under the <ExternalLink href="https://policies.google.com/privacy">Google Privacy Policy</ExternalLink>.
+        </p>
+        <p>
+          When you export a ledger as a PDF or JPG, the file is made in your browser and saved to your device. Nothing is
+          uploaded.
         </p>
       </LegalSection>
 

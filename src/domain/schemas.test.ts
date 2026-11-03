@@ -92,6 +92,10 @@ describe('stored JSON parsing', () => {
       allowFutureDates: true,
       balanceWording: 'net',
       sidebarTotals: 'balances',
+      partySort: 'lastEntry',
+      partySortDir: 'desc',
+      ledgerSortDir: 'desc',
+      ledgerPageSize: 25,
     })
   })
 
@@ -100,10 +104,20 @@ describe('stored JSON parsing', () => {
       balanceWording: 'settle',
       sidebarTotals: 'cash',
     })
+    expect(parseGlobalSettings('{"balanceWording":"cash"}').balanceWording).toBe('cash')
     expect(parseGlobalSettings('{"balanceWording":"owe","sidebarTotals":1}')).toMatchObject({
       balanceWording: 'net',
       sidebarTotals: 'balances',
     })
+  })
+
+  it('reads list order options and falls back on unknown values', () => {
+    expect(
+      parseGlobalSettings('{"partySort":"settle","partySortDir":"asc","ledgerSortDir":"asc","ledgerPageSize":100}'),
+    ).toMatchObject({ partySort: 'settle', partySortDir: 'asc', ledgerSortDir: 'asc', ledgerPageSize: 100 })
+    expect(
+      parseGlobalSettings('{"partySort":"amount","partySortDir":"up","ledgerSortDir":1,"ledgerPageSize":"50"}'),
+    ).toMatchObject({ partySort: 'lastEntry', partySortDir: 'desc', ledgerSortDir: 'desc', ledgerPageSize: 25 })
   })
 
   it('reads party settings with empty-string defaults', () => {

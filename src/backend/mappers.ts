@@ -189,6 +189,10 @@ export function globalSettingsJson(s: GlobalSettings): string {
     allowFutureDates: s.allowFutureDates,
     balanceWording: s.balanceWording,
     sidebarTotals: s.sidebarTotals,
+    partySort: s.partySort,
+    partySortDir: s.partySortDir,
+    ledgerSortDir: s.ledgerSortDir,
+    ledgerPageSize: s.ledgerPageSize,
   })
 }
 

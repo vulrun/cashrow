@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router'
-import { ArchiveIcon, LayoutDashboardIcon, LogOutIcon, PlusIcon, SearchIcon, UserIcon } from 'lucide-react'
+import { ArchiveIcon, LayoutDashboardIcon, LogOutIcon, PlusIcon, SearchIcon } from 'lucide-react'
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { BALANCE_LABELS, balanceDirection } from '@/domain/ledger'
+import { BALANCE_LABELS, balanceDirection, sortParties } from '@/domain/ledger'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { signOut } from '@/features/auth/authActions'
+import { UserAvatar } from '@/features/auth/UserAvatar'
 import { useCashbook, useFormatters } from '@/features/cashbook/useCashbook'
-import { cn, initials, pluralize } from '@/lib/utils'
+import { cn, pluralize } from '@/lib/utils'
 import { useLayout } from './LayoutContext'
 
 const AMOUNT_COLOR = { in: 'text-income', out: 'text-expense', settled: 'text-muted-foreground' } as const
@@ -24,8 +25,9 @@ export function PartiesPanel({ onNavigate }: { onNavigate?: () => void }) {
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return q ? active.filter((s) => s.party.name.toLowerCase().includes(q)) : active
-  }, [active, query])
+    const sorted = sortParties(active, settings.partySort, settings.partySortDir)
+    return q ? sorted.filter((s) => s.party.name.toLowerCase().includes(q)) : sorted
+  }, [active, query, settings.partySort, settings.partySortDir])
 
   const loading = workspaceQuery.isLoading || (ledgersQuery.isLoading && !ledgersQuery.data)
   const onOverview = location.pathname === '/' || location.pathname === ''
@@ -131,14 +133,16 @@ export function PartiesPanel({ onNavigate }: { onNavigate?: () => void }) {
                 }
               >
                 <span
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-muted-foreground"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-softer text-sm font-bold text-brand-strong"
                   aria-hidden="true"
                 >
-                  <UserIcon className="size-4" />
+                  {party.name.trim().charAt(0).toUpperCase() || '?'}
                 </span>
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate text-sm font-semibold">{party.name}</span>
-                  <span className="text-xs text-muted-foreground">
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="line-clamp-2 text-[15px] font-semibold leading-5 text-foreground wrap-break-word">
+                    {party.name}
+                  </span>
+                  <span className="text-xs text-subtle-foreground">
                     {totals.lastDate ? `Last entry ${fmt.dayMonth(totals.lastDate)}` : 'No entries yet'}
                   </span>
                 </span>
@@ -174,9 +178,7 @@ export function PartiesPanel({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* Same height as the party page's action bar: py-4 around an h-12 button, plus the border. */}
       <div className="box-content flex h-12 shrink-0 items-center gap-2.5 border-t border-border px-3 py-4">
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-softer text-xs font-bold text-brand-strong">
-          {initials(user?.name ?? '?') || '?'}
-        </span>
+        <UserAvatar user={user} />
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-[13px] font-semibold">{user?.name}</span>
           <span className="truncate text-xs text-muted-foreground">

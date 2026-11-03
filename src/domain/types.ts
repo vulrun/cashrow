@@ -78,6 +78,13 @@ export type BalanceWording = 'net' | 'cash' | 'settle'
 /** What the sidebar tiles total: outstanding balances, or cash you got / gave. */
 export type SidebarTotals = 'balances' | 'cash'
 
+/** Sidebar party order: by last entry date, name, or the amount left to settle. */
+export type PartySortKey = 'lastEntry' | 'name' | 'settle'
+
+export type SortDir = 'asc' | 'desc'
+
+export type LedgerPageSize = 25 | 50 | 100
+
 export interface GlobalSettings {
   schemaVersion: 1
   currency: string
@@ -86,6 +93,11 @@ export interface GlobalSettings {
   allowFutureDates: boolean
   balanceWording: BalanceWording
   sidebarTotals: SidebarTotals
+  partySort: PartySortKey
+  partySortDir: SortDir
+  /** Date order of a party's ledger. */
+  ledgerSortDir: SortDir
+  ledgerPageSize: LedgerPageSize
 }
 
 export interface Workspace {
